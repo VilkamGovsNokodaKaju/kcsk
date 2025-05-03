@@ -166,27 +166,50 @@
   </main>
   
 <script>
-    const img = document.querySelector('.background img');
-
+    // —— Background parallax scroll ——
+    const bgImg = document.querySelector('.background img');
     function updateBackground() {
       const scrollTop = window.scrollY;
-      // full document height minus viewport
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollRatio = docHeight > 0 ? scrollTop / docHeight : 0;
-
-      // how far we can move the image
-      const imgHeight = img.clientHeight;
-      const viewportHeight = window.innerHeight;
-      const maxOffset = imgHeight - viewportHeight;
-
-      img.style.transform = `translateY(-${scrollRatio * maxOffset}px)`;
+      const ratio = docHeight > 0 ? scrollTop / docHeight : 0;
+      const maxOffset = bgImg.clientHeight - window.innerHeight;
+      bgImg.style.transform = `translateY(-${ratio * maxOffset}px)`;
     }
-
     window.addEventListener('scroll', updateBackground);
     window.addEventListener('load', updateBackground);
-    img.addEventListener('load', updateBackground);
-  </script>
+    bgImg.addEventListener('load', updateBackground);
 
+    // —— Responsive headings & paragraphs ——
+    const headings = document.querySelectorAll('.card h1');
+    const paragraphs = document.querySelectorAll('.card p');
+    const defaultHeadingRem = 2; // matches CSS default for h1
+    const defaultParaRem = 1;    // matches CSS default for p
+
+    function adjustTextSizes() {
+      // reset to defaults for measurement
+      headings.forEach(h => h.style.fontSize = `${defaultHeadingRem}rem`);
+      paragraphs.forEach(p => p.style.fontSize = `${defaultParaRem}rem`);
+
+      // find the tightest scale based on headings
+      let minScale = Infinity;
+      headings.forEach(h => {
+        const available = h.parentElement.clientWidth * 0.9; // 90% of card width
+        const needed = h.scrollWidth;
+        minScale = Math.min(minScale, available / needed);
+      });
+      // cap at 1 so text never grows beyond default
+      const scale = Math.min(minScale, 1);
+
+      // apply scaled sizes
+      const newHeadingSize = defaultHeadingRem * scale;
+      const newParaSize    = defaultParaRem * scale;
+      headings.forEach(h => h.style.fontSize = `${newHeadingSize}rem`);
+      paragraphs.forEach(p => p.style.fontSize = `${newParaSize}rem`);
+    }
+
+    window.addEventListener('load', adjustTextSizes);
+    window.addEventListener('resize', adjustTextSizes);
+  </script>
 
 
 </body>

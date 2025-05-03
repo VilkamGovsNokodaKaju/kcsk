@@ -6,7 +6,6 @@
 }
 
 body, html {
-  /* removed height: 100%; */
   font-family: 'Helvetica Neue', sans-serif;
   color: white;
   overflow-x: hidden;
@@ -32,7 +31,16 @@ body, html {
   object-fit: cover;
   filter: brightness(0.6) contrast(1.2);
   will-change: transform;
-  /* removed transition for 1:1 follow */
+}
+
+/* Prevent headings from wrapping and set default sizes */
+.card h1 {
+  white-space: nowrap;
+  font-size: 2rem;  /* default maximum heading size */
+}
+.card p {
+  font-size: 1rem;  /* default maximum paragraph size (half of heading) */
+  line-height: 1.5;
 }
 
 /* Container */
@@ -55,18 +63,6 @@ body, html {
   opacity: 0;
   animation: fadeInUp 1s ease forwards;
 }
-
-.card h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-.card p {
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-/* Right-aligned text card */
 .card .right {
   text-align: right;
 }
@@ -78,15 +74,7 @@ body, html {
     opacity: 1;
   }
 }
-.fade-in {
-  animation-delay: 0.3s;
-}
-.delay-1 {
-  animation-delay: 0.3s;
-}
-.delay-2 {
-  animation-delay: 0.5s;
-}
-.delay-3 {
-  animation-delay: 0.7s;
-}
+.fade-in  { animation-delay: 0.3s; }
+.delay-1  { animation-delay: 0.5s; }
+.delay-2  { animation-delay: 0.7s; }
+.delay-3  { animation-delay: 0.9s; }
