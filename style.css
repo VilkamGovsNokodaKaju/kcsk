@@ -33,13 +33,13 @@ body, html {
   will-change: transform;
 }
 
-/* Prevent headings from wrapping and set default sizes */
+/* Headings default: allow wrapping; JS will enforce nowrap on short ones */
 .card h1 {
-  white-space: nowrap;
   font-size: 2rem;  /* default maximum heading size */
 }
+
 .card p {
-  font-size: 1rem;  /* default maximum paragraph size (half of heading) */
+  font-size: 1rem;  /* default maximum paragraph size */
   line-height: 1.5;
 }
 
@@ -63,6 +63,7 @@ body, html {
   opacity: 0;
   animation: fadeInUp 1s ease forwards;
 }
+
 .card .right {
   text-align: right;
 }

@@ -179,32 +179,52 @@
     window.addEventListener('load', updateBackground);
     bgImg.addEventListener('load', updateBackground);
 
-    // —— Responsive headings & paragraphs ——
+    // —— Responsive headings & paragraphs with 31-char rule ——
     const headings = document.querySelectorAll('.card h1');
     const paragraphs = document.querySelectorAll('.card p');
-    const defaultHeadingRem = 2; // matches CSS default for h1
-    const defaultParaRem = 1;    // matches CSS default for p
+    const defaultHeadingRem = 2;
+    const defaultParaRem    = 1;
+    const MAX_CHARS = 38;
 
     function adjustTextSizes() {
-      // reset to defaults for measurement
-      headings.forEach(h => h.style.fontSize = `${defaultHeadingRem}rem`);
-      paragraphs.forEach(p => p.style.fontSize = `${defaultParaRem}rem`);
-
-      // find the tightest scale based on headings
-      let minScale = Infinity;
+      // reset to defaults & whitespace
       headings.forEach(h => {
-        const available = h.parentElement.clientWidth * 0.9; // 90% of card width
-        const needed = h.scrollWidth;
-        minScale = Math.min(minScale, available / needed);
+        h.style.fontSize = `${defaultHeadingRem}rem`;
+        h.style.whiteSpace = 'normal';
       });
-      // cap at 1 so text never grows beyond default
-      const scale = Math.min(minScale, 1);
+      paragraphs.forEach(p => {
+        p.style.fontSize = `${defaultParaRem}rem`;
+      });
+
+      // only consider headings ≤31 chars for scale
+      const shortHeadings = Array.from(headings).filter(h =>
+        h.textContent.length <= MAX_CHARS
+      );
+      // enforce nowrap on those, allow wrap on the rest
+      shortHeadings.forEach(h => h.style.whiteSpace = 'nowrap');
+
+      // compute scale
+      let scale = 1;
+      if (shortHeadings.length) {
+        let minScale = Infinity;
+        shortHeadings.forEach(h => {
+          const available = h.parentElement.clientWidth * 0.9;
+          const needed    = h.scrollWidth;
+          minScale = Math.min(minScale, available / needed);
+        });
+        scale = Math.min(minScale, 1);
+      }
 
       // apply scaled sizes
-      const newHeadingSize = defaultHeadingRem * scale;
-      const newParaSize    = defaultParaRem * scale;
-      headings.forEach(h => h.style.fontSize = `${newHeadingSize}rem`);
-      paragraphs.forEach(p => p.style.fontSize = `${newParaSize}rem`);
+      const newH = defaultHeadingRem * scale;
+      const newP = defaultParaRem    * scale;
+      shortHeadings.forEach(h => {
+        h.style.fontSize = `${newH}rem`;
+      });
+      // paragraphs always follow that scale
+      paragraphs.forEach(p => {
+        p.style.fontSize = `${newP}rem`;
+      });
     }
 
     window.addEventListener('load', adjustTextSizes);
